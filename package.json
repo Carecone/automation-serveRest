@@ -1,0 +1,22 @@
+{
+  "name": "automation-serverest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx cypress open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Carecone/automation-serveRest.git"
+  },
+  "author": "Diego Souza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Carecone/automation-serveRest/issues"
+  },
+  "homepage": "https://github.com/Carecone/automation-serveRest#readme",
+  "dependencies": {
+    "cypress": "^9.1.1"
+  }
+}
