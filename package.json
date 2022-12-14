@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/Carecone/automation-serveRest#readme",
   "dependencies": {
-    "cypress": "^9.1.1"
+    "cypress": "^12.1.0"
+  },
+  "devDependencies": {
+    "cypress-dark": "^1.8.3"
   }
 }

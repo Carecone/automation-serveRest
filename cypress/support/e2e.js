@@ -14,6 +14,7 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
+require('cypress-dark')
 import './gui_commands'
 
 // Alternatively you can use CommonJS syntax:
