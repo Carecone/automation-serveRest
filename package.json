@@ -20,6 +20,11 @@
     "cypress": "^12.1.0"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^9.1.0",
+    "babel-preset-react": "^6.24.1",
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
     "cypress-dark": "^1.8.3"
   }
 }
