@@ -16,9 +16,6 @@
  * @type {Cypress.PluginConfig}
  */
 let chai = require('chai');
-let chaiHttp = require('chai-http');
-let should = chai.should(); 
-let expect = chai.expect(); 
 // eslint-disable-next-line no-unused-vars
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits

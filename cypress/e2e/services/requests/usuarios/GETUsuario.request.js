@@ -1,9 +1,17 @@
-function allUsers() {
-    return cy.request({
-        method: "GET",
-        url: "usuarios",
-        failOnStatusCode: false,
-    })
-}
+module.exports = {
+    user(id) {
+        return cy.request({
+            method: 'GET',
+            url: 'usuarios/' + id,
+            failOnStatusCode: false
+        })
+    },
 
-export { allUsers};
+    allUsers() {
+        return cy.request({
+            method: "GET",
+            url: "usuarios",
+            failOnStatusCode: false,
+        })
+    }
+}
