@@ -1,11 +1,10 @@
-import * as POSTLogin from '../requests/login/POSTLogin.request' 
+const POSTLogin = require("../requests/login/POSTLogin.request");
 
-describe('POST Login', () =>{
-
-    it('Realizar login', () => {
-        POSTLogin.login().then((response) =>{
-            expect(response.status).to.eq(200);
-            expect(response.body.message).to.eq("Login realizado com sucesso");
-        })
+describe("POST Login", () => {
+  it("Realizar login", () => {
+    POSTLogin.loginAdm().then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.message).to.eq("Login realizado com sucesso");
     });
-})
+  });
+});

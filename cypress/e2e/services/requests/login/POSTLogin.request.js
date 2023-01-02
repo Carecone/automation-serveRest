@@ -1,12 +1,21 @@
-const payloadLogin = require('../../payloads/login.json')
-
-function login() {
+const payloadLoginAdm = require("../../payloads/login-adm.json");
+const payloadLogin = require("../../payloads/login.json");
+module.exports = {
+  login() {
     return cy.request({
-        method: 'POST',
-        url: 'login',
-        failOnStatusCode: false,
-        body: payloadLogin
-    })
-}
+      method: "POST",
+      url: "login",
+      failOnStatusCode: false,
+      body: payloadLogin,
+    });
+  },
 
-export {login};
+  loginAdm() {
+    return cy.request({
+      method: "POST",
+      url: "login",
+      failOnStatusCode: false,
+      body: payloadLoginAdm,
+    });
+  },
+};

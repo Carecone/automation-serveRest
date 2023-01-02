@@ -1,9 +1,12 @@
 module.exports = {
-  deleteUser(idUser) {
+  deleteProduct(id, token) {
     return cy.request({
       method: "DELETE",
-      url: "usuarios/" + idUser,
+      url: "produtos/" + id,
       failOnStatusCode: false,
+      headers: {
+        Authorization: token
+      }
     });
   },
 };
