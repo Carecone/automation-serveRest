@@ -53,7 +53,3 @@ describe("POST Produtos", () => {
     });
   });
 });
-
-describe("DELETE Produtos", () => {
-  it("Registro excluído com sucesso", () => {});
-});
