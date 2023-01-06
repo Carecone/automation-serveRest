@@ -1,14 +1,16 @@
 const payloadPostProduct = require("../../payloads/add-produto.json");
 module.exports = {
-  addProduct(token) {
+  addProduct(token, name) {
     return cy.request({
       method: "POST",
       url: "produtos",
-      body: payloadPostProduct,
+      body: {
+        payloadPostProduct
+      },
       failOnStatusCode: false,
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     });
   },
 };
