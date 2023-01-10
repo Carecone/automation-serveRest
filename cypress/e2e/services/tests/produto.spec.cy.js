@@ -4,14 +4,10 @@ const GETProduto = require("../requests/produtos/GETProduto.request");
 const PUTProduto = require("../requests/produtos/PUTProdutos.request");
 const Login = require("../requests/login/POSTLogin.request");
 
-const hooks = require('../../../support/hooks')
-
 describe("POST Produtos", () => {
   it("Cadastrado com sucesso", () => {
-    hooks.generate();
-    let produto = hooks.generate();
     Login.loginAdm().then((token) => {
-      POSTProduto.addProduct(token.body.authorization, produto).then((response) => {
+      POSTProduto.addProduct(token.body.authorization).then((response) => {
         expect(response.status).to.eq(201);
         expect(response.body.message).to.eq("Cadastro realizado com sucesso");
         DELETEProduto.deleteProduct(
@@ -23,11 +19,9 @@ describe("POST Produtos", () => {
   });
 
   it("Já existe produto com esse nome", () => {
-    hooks.generate();
-    let produto = hooks.generate();
     Login.loginAdm().then((token) => {
-      POSTProduto.addProduct(token.body.authorization,produto).then((resAddProduto) => {
-        POSTProduto.addProduct(token.body.authorization, hooks.generate()).then((response) => {
+      POSTProduto.addProduct(token.body.authorization).then((resAddProduto) => {
+        POSTProduto.addProduct(token.body.authorization).then((response) => {
           expect(response.status).to.eq(400);
           expect(response.body.message).to.eq(
             "Já existe produto com esse nome"
@@ -42,9 +36,7 @@ describe("POST Produtos", () => {
   });
 
   it("Token de acesso expirado/inválido/ausente", () => {
-    hooks.generate();
-    let produto = hooks.generate();
-    POSTProduto.addProduct('', produto).then((response) => {
+    POSTProduto.addProduct("").then((response) => {
       expect(response.status).to.eq(401);
       expect(response.body.message).to.eq(
         "Token de acesso ausente, inválido, expirado ou usuário do token não existe mais"
@@ -53,8 +45,6 @@ describe("POST Produtos", () => {
   });
 
   it("Rota exclusiva para administradores", () => {
-    hooks.generate();
-    let produto = hooks.generate();
     Login.login().then((token) => {
       POSTProduto.addProduct(token.body.authorization).then((response) => {
         expect(response.status).to.eq(403);
@@ -68,8 +58,6 @@ describe("POST Produtos", () => {
 
 describe("GET Produtos", () => {
   it("Buscar produto por ID", () => {
-    hooks.generate();
-    let produto = hooks.generate();
     Login.loginAdm().then((token) => {
       POSTProduto.addProduct(token.body.authorization).then((resAddProduct) => {
         GETProduto.getProduct(resAddProduct.body._id).then((response) => {
@@ -85,8 +73,6 @@ describe("GET Produtos", () => {
   });
 
   it("Listar produtos cadastrados", () => {
-    hooks.generate();
-    let produto = hooks.generate();
     GETProduto.getAllProduct().then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body.produtos).to.not.have.length(1);
@@ -94,8 +80,6 @@ describe("GET Produtos", () => {
   });
 
   it("Buscar produto por ID", () => {
-    hooks.generate();
-    let produto = hooks.generate();
     GETProduto.getProduct("asdasdasdasdasdas").then((response) => {
       expect(response.status).to.eq(400);
       expect(response.body.message).to.eq("Produto não encontrado");
@@ -105,10 +89,8 @@ describe("GET Produtos", () => {
 
 describe("PUT produtos", () => {
   it("Alterado com sucesso", () => {
-    hooks.generate();
-    let produto = hooks.generate();
     Login.loginAdm().then((token) => {
-      POSTProduto.addProduct(token.body.authorization, produto).then((resAddProduto) => {
+      POSTProduto.addProduct(token.body.authorization).then((resAddProduto) => {
         PUTProduto.updateProduct(
           token.body.authorization,
           resAddProduto.body._id
@@ -125,10 +107,8 @@ describe("PUT produtos", () => {
   });
 
   it("Cadastrado com sucesso", () => {
-    hooks.generate();
-    let produto = hooks.generate();
     Login.loginAdm().then((token) => {
-      PUTProduto.updateProduct(token.body.authorization, produto).then((response) => {
+      PUTProduto.updateProduct(token.body.authorization).then((response) => {
         expect(response.status).to.eq(201);
         expect(response.body.message).to.eq("Cadastro realizado com sucesso");
         DELETEProduto.deleteProduct(
@@ -139,11 +119,31 @@ describe("PUT produtos", () => {
     });
   });
 
-  it("Já existe produto com esse nome", () => {
-    hooks.generate();
-    let produto = hooks.generate();
+  it("Rota exclusiva para administadores", () => {
     Login.loginAdm().then((token) => {
-      POSTProduto.addProduct(token.body.authorization, produto).then(
+      POSTProduto.addProduct(token.body.authorization).then((resAddProduto) => {
+        Login.login().then((tokenZezinho) => {
+          PUTProduto.updateProduct(
+            tokenZezinho.body.authorization,
+            resAddProduto.body._id
+          ).then((response) => {
+            expect(response.status).to.eq(403);
+            expect(response.body.message).to.eq(
+              "Rota exclusiva para administradores"
+            );
+          });
+        });
+        DELETEProduto.deleteProduct(
+          resAddProduto.body._id,
+          token.body.authorization
+        );
+      });
+    });
+  });
+  /*
+  it("Já existe produto com esse nome", () => {
+    Login.loginAdm().then((token) => {
+      POSTProduto.addProduct(token.body.authorization).then(
         (resAddProdutoFirst) => {
           POSTProduto.addProduct(token.body.authorization).then(
             (resAddProdutoSecond) => {
@@ -168,6 +168,25 @@ describe("PUT produtos", () => {
           );
         }
       );
+    });
+  });
+  */
+});
+
+describe("DELETE Produtos", () => {
+  it("Registro excluído com sucesso", () => {
+    Login.loginAdm().then((token) => {
+      POSTProduto.addProduct(token.body.authorization).then((response) => {
+        DELETEProduto.deleteProduct(
+          response.body._id,
+          token.body.authorization
+        ).then((responseDel) => {
+          expect(responseDel.status).to.eq(200);
+          expect(responseDel.body.message).contains(
+            `Registro excluído com sucesso | Nenhum registro excluído`
+          );
+        });
+      });
     });
   });
 });
