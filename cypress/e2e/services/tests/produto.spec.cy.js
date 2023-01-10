@@ -140,6 +140,25 @@ describe("PUT produtos", () => {
       });
     });
   });
+
+  it("Token de acesso expirado/inválido/ausente", () => {
+    Login.loginAdm().then((token) => {
+      POSTProduto.addProduct(token.body.authorization).then((resAddProduto) => {
+        PUTProduto.updateProduct("", resAddProduto.body._id).then(
+          (response) => {
+            expect(response.status).to.eq(401);
+            expect(response.body.message).to.eq(
+              "Token de acesso ausente, inválido, expirado ou usuário do token não existe mais"
+            );
+          }
+        );
+        DELETEProduto.deleteProduct(
+          resAddProduto.body._id,
+          token.body.authorization
+        );
+      });
+    });
+  });
   /*
   it("Já existe produto com esse nome", () => {
     Login.loginAdm().then((token) => {
@@ -182,11 +201,73 @@ describe("DELETE Produtos", () => {
           token.body.authorization
         ).then((responseDel) => {
           expect(responseDel.status).to.eq(200);
-          expect(responseDel.body.message).contains(
-            `Registro excluído com sucesso | Nenhum registro excluído`
+          expect(responseDel.body.message).contain(
+            "Registro excluído com sucesso"
           );
         });
       });
     });
   });
+
+  it("Rota exclusiva para administradores", () => {
+    Login.loginAdm().then((token) => {
+      POSTProduto.addProduct(token.body.authorization).then((response) => {
+        Login.login().then((tokenZezinho) => {
+          DELETEProduto.deleteProduct(
+            response.body._id,
+            tokenZezinho.body.authorization
+          ).then((responseDel) => {
+            expect(responseDel.status).to.eq(403);
+            expect(responseDel.body.message).to.eq(
+              "Rota exclusiva para administradores"
+            );
+          });
+        });
+        DELETEProduto.deleteProduct(
+          response.body._id,
+          token.body.authorization
+        );
+      });
+    });
+  });
+
+  it("Token de acesso expirado/inválido/ausente", () => {
+    Login.loginAdm().then((token) => {
+      POSTProduto.addProduct(token.body.authorization).then((response) => {
+        DELETEProduto.deleteProduct(response.body._id, "").then(
+          (responseDel) => {
+            expect(responseDel.status).to.eq(401);
+            expect(responseDel.body.message).to.eq(
+              "Token de acesso ausente, inválido, expirado ou usuário do token não existe mais"
+            );
+          }
+        );
+        DELETEProduto.deleteProduct(
+          response.body._id,
+          token.body.authorization
+        );
+      });
+    });
+  });
+  /*
+  it("Produto de um carrinho", () => {
+    Login.loginAdm().then((token) => {
+      POSTProduto.addProduct(token.body.authorization).then((response) => {
+        DELETEProduto.deleteProduct(
+          response.body._id,
+          tokenZezinho.body.authorization
+        ).then((responseDel) => {
+          expect(responseDel.status).to.eq(400);
+          expect(responseDel.body.message).to.eq(
+            "Não é permitido excluir produto que faz parte de carrinho"
+          );
+        });
+        DELETEProduto.deleteProduct(
+          response.body._id,
+          token.body.authorization
+        );
+      });
+    });
+  });
+  */
 });
